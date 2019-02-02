@@ -8,7 +8,7 @@ const StopList = ({ source, onRemove }) => {
             source.map((stop, index) =>
                 <ListItem
                     key={index}
-                    text={stop}
+                    text={stop.text}
                     onRemove={() => onRemove(index)}
                 />
             )}

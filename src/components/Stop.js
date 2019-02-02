@@ -20,8 +20,8 @@ class Stop extends Component {
 
     onEnter (target) {
         if (target.charCode === 13) {
-            this.props.dispatch(StopActions.addStop(this.state.newStop));
-            this.setState({ newStop: '' })
+            this.props.dispatch(StopActions.addStop(this.state.newStop, this.props.dispatch));
+            this.setState({newStop: ''})
         }
     }
 

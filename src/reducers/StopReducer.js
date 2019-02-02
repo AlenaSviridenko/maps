@@ -2,12 +2,16 @@ import {
     ADD_STOP,
     REMOVE_STOP,
     MOVE_STOP,
-    GET_STOPS
+    GET_STOPS,
+    GET_ADDRESS_ERROR,
+    IN_PROCESS
 } from '../actions/types';
 import swap from '../helpers/swap';
 
 const INITIAL_STATE = {
-    stops: []
+    stops: [],
+    error: '',
+    inProcess: false
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -15,7 +19,12 @@ export default (state = INITIAL_STATE, action) => {
         case ADD_STOP:
             return {
                 ...state,
-                stops: [...state.stops, action.payload.address]
+                stops: [...state.stops, { text: action.payload.address, coordinates: action.payload.coordinates }]
+            };
+        case IN_PROCESS:
+            return {
+                ...state,
+                inProcess: !state.inProcess
             };
         case REMOVE_STOP:
             return {
@@ -26,6 +35,11 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 stops: swap(state.stops, action.payload.from, action.payload.to)
+            };
+        case GET_ADDRESS_ERROR:
+            return {
+                ...state,
+                error: action.payload.error
             };
         case GET_STOPS:
             return state;

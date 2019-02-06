@@ -15,7 +15,11 @@ class StopScreen extends Component {
 
         this.state = { newStop: '' };
         this.onEnter = this.onEnter.bind(this);
-        this.onRemoveStop = this.onRemoveStop.bind(this);
+        this.inputRef = React.createRef();
+    }
+
+    componentDidMount() {
+        this.inputRef.current.focus();
     }
 
     onEnter (target) {
@@ -27,13 +31,7 @@ class StopScreen extends Component {
 
     onTextChange = (text) => this.setState({ newStop: text });
 
-    onRemoveStop = (index) => this.props.dispatch(StopActions.removeStop(index));
-
-    renderError() {
-        if (this.props.error) {
-            return <p className="error">{this.props.error}</p>
-        }
-    }
+    renderError = () => this.props.error && <p className="error">{this.props.error}</p>
 
     render() {
         return (
@@ -41,11 +39,12 @@ class StopScreen extends Component {
                 <StopInput
                     placeholder="Новая точка маршрута"
                     onEnter={this.onEnter}
+                    ref={this.inputRef}
                     onTextChange={(e) => this.onTextChange(e.target.value)}
                     value={this.state.newStop}
                 />
                 {this.renderError()}
-                <StopList stops={this.props.stops} onRemove={this.onRemoveStop}/>
+                <StopList/>
             </div>
         )
     }

@@ -1,7 +1,16 @@
 $shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
+$width: 200px;
 
 @mixin borders($radius) {
   border-radius: $radius;
+}
+
+@mixin width() {
+  max-width: $width;
+  width: $width;
+}
+
+@mixin shadows() {
   box-shadow: $shadow;
   -webkit-box-shadow: $shadow;
   -moz-box-shadow: $shadow;
@@ -14,27 +23,47 @@ $shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
 }
 
 .app {
-  margin: 30px;
+  margin: 20px 0 0 20px;
 }
 
 .stopSection {
-  .inputStop {
+  .stopItem {
     @include borders(5px);
+    @include shadows();
+    @include width();
     @include flex();
     padding: 5px;
+    margin-bottom: 10px;
     cursor: move;
 
     .icon {
       cursor: pointer;
+      padding-left: 10px;
     }
+  }
+
+  input {
+    @include borders(5px);
+    @include width();
+    padding: 10px;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  ul {
+    list-style-type: none;
+    padding: 0;
   }
 
   .error {
     color: red;
+    @include width();
+    overflow-wrap: break-word;
   }
 }
 
 .mapSection {
-  width: 100px;
-  height: 100px;
+  min-width: 300px;
 }

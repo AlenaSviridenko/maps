@@ -1,43 +1,81 @@
 import axios from 'axios';
 
+import config from '../config/config.json';
 import {
     ADD_STOP,
     REMOVE_STOP,
     MOVE_STOP,
-    GET_STOPS,
+    UPDATE_STOP,
     GET_ADDRESS_ERROR,
     IN_PROCESS
 } from './types';
+import { ERRORS, NO_RESULTS } from '../config/constants';
 
-const geocoderApi = 'https://maps.googleapis.com/maps/api/geocode/json?address={ADDRESS}&key=AIzaSyAQ-oUhp2w6CfcVdcR5a17y1V-W76HEFIg';
+export const updateStop = ({ newCoordinates, index }) => {
+    return (dispatch) => {
+        dispatch({ type: IN_PROCESS });
+        const coordinatesString = newCoordinates.lat.toString().concat(',', newCoordinates.lng.toString());
 
-export const getStops = () => {
-    return {
-        type: GET_STOPS
-    }
+        return axios.get(config.geocoderApi.replace('{INFO}', coordinatesString).replace('{TYPE}', 'latlng'))
+            .then((response) => {
+
+                if (response.data.status === NO_RESULTS) {
+                    dispatch({
+                        type: GET_ADDRESS_ERROR,
+                        payload: { error: ERRORS.addressNotFound }
+                    });
+                    return;
+                }
+
+                if (response.data.results
+                    && response.data.results[0]
+                    && response.data.results[0].formatted_address) {
+
+                    const formattedAddress = response.data.results[0].formatted_address;
+
+                    dispatch({
+                        type: UPDATE_STOP,
+                        payload: {
+                            index,
+                            newAddress: {
+                                text: formattedAddress,
+                                coordinates: newCoordinates
+                            }
+                        }
+                    })
+                }
+            });
+    };
 };
 
 export const addStop = (address) => {
     return (dispatch) => {
         dispatch({ type: IN_PROCESS });
 
-        return axios.get(geocoderApi.replace('{ADDRESS}', address))
+        return axios.get(config.geocoderApi.replace('{INFO}', address).replace('{TYPE}', 'address'))
             .then((response) => {
 
-                if (response.data.status === 'ZERO_RESULTS') {
+                if (response.data && response.data.status === NO_RESULTS) {
                     dispatch({
                         type: GET_ADDRESS_ERROR,
-                        payload: { error: 'Адрес неточный. Пожалуйста, введите более конкретный адрес.' }
+                        payload: { error: ERRORS.notPreciseAddress }
                     });
                     return;
                 }
-                const coordinates = response.data.results[0].geometry.location;
 
-                dispatch({
-                    type: ADD_STOP,
-                    payload: { address, coordinates }
-                })
+                if (response.data.results
+                    && response.data.results[0]
+                    && response.data.results[0].geometry
+                    && response.data.results[0].geometry.location) {
 
+                    const coordinates = response.data.results[0].geometry.location;
+                    const formattedAddress = response.data.results[0].formatted_address;
+
+                    dispatch({
+                        type: ADD_STOP,
+                        payload: { address: formattedAddress, coordinates }
+                    })
+                }
             });
     };
 };

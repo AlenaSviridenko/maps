@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 
-import MainScreen from './components/MainScreen';
-
+import { MainScreen } from './components/MainScreen';
 import './App.scss';
 
 class App extends Component {

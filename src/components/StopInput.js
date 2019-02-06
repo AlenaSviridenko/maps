@@ -1,15 +1,15 @@
 import React from 'react';
 
-const StopInput = ({ placeholder, onEnter, onTextChange, value }) => {
+const StopInput = React.forwardRef(({ placeholder, onEnter, onTextChange, value }, ref) => {
     return (
        <input
-           id="suggest"
            placeholder={placeholder}
            onKeyPress={onEnter}
+           ref={ref}
            onChange={onTextChange}
            value={value}
        />
     )
-};
+});
 
 export { StopInput };

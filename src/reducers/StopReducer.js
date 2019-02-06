@@ -2,11 +2,10 @@ import {
     ADD_STOP,
     REMOVE_STOP,
     MOVE_STOP,
-    GET_STOPS,
+    UPDATE_STOP,
     GET_ADDRESS_ERROR,
     IN_PROCESS
 } from '../actions/types';
-import swap from '../helpers/swap';
 
 const INITIAL_STATE = {
     stops: [],
@@ -21,12 +20,13 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 stops: [...state.stops, { text: action.payload.address, coordinates: action.payload.coordinates }],
-                stopRemoved: false
+                stopRemoved: false,
+                inProcess: false
             };
         case IN_PROCESS:
             return {
                 ...state,
-                inProcess: !state.inProcess,
+                inProcess: true,
                 error: ''
             };
         case REMOVE_STOP:
@@ -34,6 +34,15 @@ export default (state = INITIAL_STATE, action) => {
                 ...state,
                 stops: state.stops.filter((stop, index) => action.payload.index !== index),
                 stopRemoved: true
+            };
+        case UPDATE_STOP:
+            return {
+                ...state,
+                stops: state.stops.map((stop, index) =>
+                    index !== action.payload.index
+                        ? stop
+                        : action.payload.newAddress
+                )
             };
         case MOVE_STOP:
             return {
@@ -46,8 +55,6 @@ export default (state = INITIAL_STATE, action) => {
                 ...state,
                 error: action.payload.error
             };
-        case GET_STOPS:
-            return state;
         default:
             return state;
     }

@@ -1,43 +1,44 @@
 import React, { Component } from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
 import { ListItem } from './ListItem';
+import * as StopActions from '../actions';
 
 class StopList extends Component {
 
     constructor(props) {
         super(props);
+        const { dispatch } = props;
 
-        this.state = { stops: [] }
+        bindActionCreators(StopActions, dispatch);
+        this.onDragEnd = this.onDragEnd.bind(this);
+        this.onRemoveStop = this.onRemoveStop.bind(this);
     }
 
-    componentDidMount() {
-        this.setState({ stops: this.props.stops })
-    }
+    onDragStart = (index) => this.draggedItem = this.props.stops[index];
 
-    onDragStart(index) {
-        this.draggedItem = this.state.stops[index];
-    }
-
-    onDragOver(index) {
-        const draggedOverItem = this.state.stops[index];
+    onDragEnter(index) {
+        const draggedOverItem = this.props.stops[index];
 
         if (this.draggedItem === draggedOverItem) {
             return;
         }
 
-        let items = this.state.stops.filter(item => item !== this.draggedItem);
+        const that = this;
+        let items = this.props.stops.filter(item => item !== that.draggedItem);
 
+        // inserting draggable item over the current item
         items.splice(index, 0, this.draggedItem);
-
-        this.setState({ stops: items});
+        this.props.dispatch(StopActions.moveStop({ stops: items }));
     }
 
-    onDragEnd() {
-        this.draggedItem = null;
-    }
+    onDragEnd = () => this.draggedItem = null;
+
+    onRemoveStop = (index) => this.props.dispatch(StopActions.removeStop(index));
 
     render() {
-        const { stops, onRemove } = this.props;
+        const { stops } = this.props;
         return (
             <ul>{
                 stops.map((stop, index) =>
@@ -45,9 +46,9 @@ class StopList extends Component {
                         key={index}
                         text={stop.text}
                         onDragStart={() => this.onDragStart(index)}
-                        onDragOver={() => this.onDragOver(index)}
+                        onDragEnter={() => this.onDragEnter(index)}
                         onDragEnd={this.onDragEnd}
-                        onRemove={() => onRemove(index)}
+                        onRemove={() => this.onRemoveStop(index)}
                     />
                 )}
             </ul>
@@ -55,4 +56,9 @@ class StopList extends Component {
     }
 }
 
-export default StopList;
+const mapStateToProps = ({ stop }) => {
+    const { stops } = stop;
+    return { stops };
+};
+
+export default connect(mapStateToProps)(StopList);

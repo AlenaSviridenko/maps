@@ -51,8 +51,8 @@ class StopScreen extends Component {
 }
 
 const mapStateToProps = ({ stop }) => {
-    const { stops, error } = stop;
-    return { stops, error };
+    const { error } = stop;
+    return { error };
 };
 
 export default connect(mapStateToProps)(StopScreen);

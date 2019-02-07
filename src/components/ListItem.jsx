@@ -3,7 +3,7 @@ import { FaRegTrashAlt } from 'react-icons/fa';
 
 const ListItem = ({ text, onRemove, key, onDragStart, onDragEnter, onDragEnd }) => {
     return (
-        <li key={key} >
+        <li key={key}>
             <div className="stopItem"
                  draggable
                  onDragStart={onDragStart}

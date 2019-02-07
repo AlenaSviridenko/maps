@@ -1,8 +1,8 @@
-export default (store) => (next) => async (action) => {
+export default (store) => (next) => (action) => {
     console.group(action.type);
     console.info('Dispatching:', action);
 
-    const result = await next(action);
+    const result = next(action);
 
     console.log('Next state ', store.getState());
     console.groupEnd();

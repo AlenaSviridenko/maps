@@ -20,7 +20,7 @@ class Stop extends Component {
 
     onEnter (target) {
         if (target.charCode === 13) {
-            this.props.dispatch(StopActions.addStop(this.state.newStop, this.props.dispatch));
+            this.props.dispatch(StopActions.addStop(this.state.newStop));
             this.setState({newStop: ''})
         }
     }
@@ -33,6 +33,12 @@ class Stop extends Component {
         this.props.dispatch(StopActions.removeStop(index));
     }
 
+    renderError() {
+        if (this.props.error) {
+            return <p className="error">{this.props.error}</p>
+        }
+    }
+
     render() {
         return (
             <div className="stopSection">
@@ -42,6 +48,7 @@ class Stop extends Component {
                     onTextChange={(e) => this.onTextChange(e.target.value)}
                     value={this.state.newStop}
                 />
+                {this.renderError()}
                 <StopList source={this.props.stops} onRemove={this.onRemoveStop}/>
             </div>
         )
@@ -49,8 +56,8 @@ class Stop extends Component {
 }
 
 const mapStateToProps = ({ stop }) => {
-    const { stops } = stop;
-    return { stops };
+    const { stops, error } = stop;
+    return { stops, error };
 };
 
 export default connect(mapStateToProps)(Stop);

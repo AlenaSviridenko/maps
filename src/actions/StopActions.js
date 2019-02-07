@@ -5,8 +5,11 @@ import {
     REMOVE_STOP,
     MOVE_STOP,
     GET_STOPS,
-    GET_ADDRESS_ERROR
+    GET_ADDRESS_ERROR,
+    IN_PROCESS
 } from './types';
+
+const geocoderApi = 'https://maps.googleapis.com/maps/api/geocode/json?address={ADDRESS}&key=AIzaSyAQ-oUhp2w6CfcVdcR5a17y1V-W76HEFIg';
 
 export const getStops = () => {
     return {
@@ -14,25 +17,29 @@ export const getStops = () => {
     }
 };
 
-export const addStop = async (address, dispatch) => {
-    dispatch({type: ADD_STOP})
-    const response = await window.ymaps.geocode(address);
-    const result = response.geoObjects.get(0);
-    const precision = result.properties.get('metaDataProperty.GeocoderMetaData.precision');
+export const addStop = (address) => {
+    return (dispatch) => {
+        dispatch({ type: IN_PROCESS });
 
-    if (precision !== 'exact') {
-        dispatch({
-            type: GET_ADDRESS_ERROR,
-            payload: { error: 'Адрес неточный. Пожалуйста, введите более конкретный адрес.' }
-        });
-    }
+        return axios.get(geocoderApi.replace('{ADDRESS}', address))
+            .then((response) => {
 
-    const coordinates = result.geometry._coordinates;
+                if (response.data.status === 'ZERO_RESULTS') {
+                    dispatch({
+                        type: GET_ADDRESS_ERROR,
+                        payload: { error: 'Адрес неточный. Пожалуйста, введите более конкретный адрес.' }
+                    });
+                    return;
+                }
+                const coordinates = response.data.results[0].geometry.location;
 
-    dispatch({
-        type: ADD_STOP,
-        payload: { address, coordinates }
-    })
+                dispatch({
+                    type: ADD_STOP,
+                    payload: { address, coordinates }
+                })
+
+            });
+    };
 };
 
 export const removeStop = (index) => {

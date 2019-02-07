@@ -23,8 +23,13 @@ $shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
     @include flex();
     padding: 5px;
   }
+
+  .error {
+    color: red;
+  }
 }
 
 .mapSection {
-
+  width: 100px;
+  height: 100px;
 }

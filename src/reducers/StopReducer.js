@@ -24,7 +24,8 @@ export default (state = INITIAL_STATE, action) => {
         case IN_PROCESS:
             return {
                 ...state,
-                inProcess: !state.inProcess
+                inProcess: !state.inProcess,
+                error: ''
             };
         case REMOVE_STOP:
             return {

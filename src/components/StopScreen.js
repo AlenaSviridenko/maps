@@ -3,10 +3,10 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import { StopInput } from './StopInput';
-import { StopList } from './StopList';
+import StopList from './StopList';
 import * as StopActions from '../actions';
 
-class Stop extends Component {
+class StopScreen extends Component {
 
     constructor(props) {
         super(props);
@@ -25,13 +25,9 @@ class Stop extends Component {
         }
     }
 
-    onTextChange (text) {
-        this.setState({ newStop: text })
-    }
+    onTextChange = (text) => this.setState({ newStop: text });
 
-    onRemoveStop (index) {
-        this.props.dispatch(StopActions.removeStop(index));
-    }
+    onRemoveStop = (index) => this.props.dispatch(StopActions.removeStop(index));
 
     renderError() {
         if (this.props.error) {
@@ -49,7 +45,7 @@ class Stop extends Component {
                     value={this.state.newStop}
                 />
                 {this.renderError()}
-                <StopList source={this.props.stops} onRemove={this.onRemoveStop}/>
+                <StopList stops={this.props.stops} onRemove={this.onRemoveStop}/>
             </div>
         )
     }
@@ -60,4 +56,4 @@ const mapStateToProps = ({ stop }) => {
     return { stops, error };
 };
 
-export default connect(mapStateToProps)(Stop);
+export default connect(mapStateToProps)(StopScreen);

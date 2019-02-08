@@ -49,9 +49,9 @@ export const removeStop = (index) => {
     }
 };
 
-export const moveStop = ({ from, to }) => {
+export const moveStop = ({ stops }) => {
     return {
         type: MOVE_STOP,
-        payload: { from, to }
+        payload: { stops }
     }
 };

@@ -90,4 +90,5 @@ test('calls addStop on enter', async () => {
     }));
 
     await wait(() => expect(axiosMock.get).toHaveBeenCalledTimes(1));
+    expect(wrapper)
 });

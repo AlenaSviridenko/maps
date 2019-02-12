@@ -17,9 +17,7 @@ import reducers from '../../reducers';
 import StopList from '../StopList';
 
 const TEST_LOCATION = 'Moscow';
-const middleware = [thunk];
-const enhancer = applyMiddleware(...middleware);
-const store = createStore(reducers, {
+const INITIAL_STATE = {
     stop: {
         stops: [
             {
@@ -32,10 +30,13 @@ const store = createStore(reducers, {
         ],
         error: 'Test error'
     }
-}, enhancer);
+};
+
+const middleware = [thunk];
+const enhancer = applyMiddleware(...middleware);
+const store = createStore(reducers, INITIAL_STATE, enhancer);
 
 jest.mock('axios');
-console.error = jest.fn();
 let wrapper;
 
 afterEach(() => {
@@ -56,6 +57,44 @@ test('loads correctly', () => {
 
 test('render stops list', () => {
     const { getByText } = wrapper;
-    //const li = wrapper.getByText('Test error');
     expect(getByText(TEST_LOCATION)).toBeVisible();
+});
+
+test('removes item on trash icon click', () => {
+    const icon = wrapper.getByTitle('removeIcon');
+
+    fireEvent.click(icon);
+
+    expect(() => { wrapper.getByText(TEST_LOCATION); }).toThrowError(/Unable to find an element with the text/);
+});
+
+test('removes item on trash icon click', () => {
+    const icon = wrapper.getByTitle('removeIcon');
+
+    fireEvent.click(icon);
+
+    expect(() => { wrapper.getByText(TEST_LOCATION); }).toThrowError(/Unable to find an element with the text/);
+});
+
+test('reordering list on Drag', () => {
+    const customState = {
+        ...INITIAL_STATE,
+        stop: {
+            stops: [...INITIAL_STATE.stop.stops, { text: 'Yaroslavl', coordinates: { lat: 57.37, lng: 39.52 }}]
+        }
+    };
+    const customStore = createStore(reducers, customState, enhancer);
+    const customWrapper = render(
+        <Provider store={customStore}>
+            <StopList/>
+        </Provider>
+    );
+    const item = customWrapper.getByTestId('Yaroslavl');
+    fireEvent.dragStart(item);
+    fireEvent.dragEnter(item, { index: 0 });
+    fireEvent.dragEnd(item);
+
+    console.log(customWrapper.debug());
+
+    expect(() => { wrapper.getByText(TEST_LOCATION); }).toThrowError(/Unable to find an element with the text/);
 });

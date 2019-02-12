@@ -13,12 +13,14 @@ class StopList extends Component {
 
         bindActionCreators(StopActions, dispatch);
         this.onDragEnd = this.onDragEnd.bind(this);
+        this.onDragEnter = this.onDragEnter.bind(this);
+        this.onDragStart = this.onDragStart.bind(this);
         this.onRemoveStop = this.onRemoveStop.bind(this);
     }
 
-    onDragStart = (index) => this.draggedItem = this.props.stops[index];
+    onDragStart = ({ index }) => this.draggedItem = this.props.stops[index];
 
-    onDragEnter(index) {
+    onDragEnter({ index }) {
         const draggedOverItem = this.props.stops[index];
 
         if (this.draggedItem === draggedOverItem) {
@@ -35,7 +37,7 @@ class StopList extends Component {
 
     onDragEnd = () => this.draggedItem = null;
 
-    onRemoveStop = (index) => this.props.dispatch(StopActions.removeStop(index));
+    onRemoveStop = ({ index }) => this.props.dispatch(StopActions.removeStop(index));
 
     render() {
         const { stops } = this.props;
@@ -43,12 +45,13 @@ class StopList extends Component {
             <ul>{
                 stops.map((stop, index) =>
                     <ListItem
+                        index={index}
                         key={index}
                         text={stop.text}
-                        onDragStart={() => this.onDragStart(index)}
-                        onDragEnter={() => this.onDragEnter(index)}
+                        onDragStart={this.onDragStart}
+                        onDragEnter={this.onDragEnter}
                         onDragEnd={this.onDragEnd}
-                        onRemove={() => this.onRemoveStop(index)}
+                        onRemove={this.onRemoveStop}
                     />
                 )}
             </ul>

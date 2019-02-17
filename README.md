@@ -1,6 +1,4 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
+## How to start app
 
 In the project directory, you can run:
 
@@ -9,60 +7,52 @@ In the project directory, you can run:
 Runs the app in the development mode.<br>
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+## Ответы на вопросы.
 
-### `npm test`
+1. Расскажите, чем, на ваш взгляд, отличается хорошее клиентское приложение от плохого с точки зрения
+* пользователя;
+  * Хорошее приложение должно удовлетворять требованиям пользователя, быть понятным, стабильным, легковесным (больше применимо к мобильным приложениям, но и к Web - тоже) и быстрым. Если в приложении происходит какой-то сбой - пользователь должен видеть корректное сообщение об ошибке.
+* менеджера проекта;
+  * В хорошем приложении должны быть понятны и четко разделены зоны ответственности по компонентам приложения, чтобы менеджер знал кому и куда писать, если что-то произошло. От клиентов поступает положительный фидбэк, а так же требования клиента понятны и конкретны.
+* дизайнера;
+  * Хорошее приложение соотвествует всем идеалам material дизайна, спроектировано в лучших традициях UX.
+* верстальщика;
+  * Хорошее приложение имеет понятные, четкие макеты, которые кардинально не меняются каждый день. Для приложения есть конкретно очерченный круг девайсов и экранов, на которых это приложение должно хорошо отображаться.
+* серверного программиста
+  * понятная для поддержки архитектура, информативные логи, настроенные мониторинг состояния сервисов сервера.
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+2. Опишите основные особенности разработки крупных многостраничных сайтов, функциональность которых может меняться в процессе реализации и поддержки. 
+  * Сайт должен строиться на основе реюзабельных и легко переносимых компонент, которые можно пересобрать в нужную страницу по требованиям заказчика. Наличие единого styleguide, чтобы на каждой странице не начиналась самодеятельность. В идеале иметь актуальную документацию, чтобы если в команде появился новый человек, он не начал городить workaround-ы, потому что не смог разобраться в функциональности.
+В моей практике как раз была работа над продуктами, которые написали 4 года назад "как получилось", к этим продуктам не было документации, не было толковых комментариев к коду, не было гайдов и макетов для страниц. Решали тем, что по-немногу документировали и комментировали код, рефакторили, выносили общие стили в общие файлы, начали использовать Zeplin для макетов.
 
-### `npm run build`
+3. При разработке интерфейсов с использованием компонентной архитектуры часто используются термины Presentational Сomponents и Сontainer Сomponents. Что означают данные термины? Зачем нужно такое разделение, какие у него есть плюсы и минусы?
+  * Container component - принимает данные и работает с данными. Может вызывать actions на эти данные, часто создается при помощи HOC, например connect()
+  * Presentational component - только отображает данные. Получает эти данные и методы через props.
+Плюсы в реюзабельности и в лучшем понимании и представлении приложения, которое правильно логически разделено на компоненты.
+Минусов не могу выделить, разве что тестов больше писать.
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+4. Как устроено наследование в JS? Расскажите о своем опыте реализации JS наследования без использования фреймворков. 
+  * Оно устроено через прототипы. Можно для созданного объекта Obj1, например, указать в качестве прототипа другой объект Obj2, и таким образом Obj1 получит все свойства и методы Obj2. В чистом виде JS наследование не приходилость использовать, только наследование в Angular 2+;
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+5. Какие библиотеки можно использовать для написания тестов end-to-end во фронтенде? Расскажите о своем опыте тестирования веб-приложений. 
+  * Selenium, Cypress - эти самые на слуху, наверное.
+В своем опыте использовала только WebDriverJS - имплементация Selenium для JS. Писала на нем тесты для web-приложения с полным циклом пользователя: пользователь логинится, ждет код подтверждения двух-факторной аутентификации (был специальны watcher за почтовым ящиком, на который приходили коды), создает визит к врачу со всеми необходимыми данными (приложение для консьержей больницы, куда звонять пациенты и просят назначить визит к врачу), отправляет визит в очередь и разлогинивается.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+6. Вам нужно реализовать форму для отправки данных на сервер, состоящую из нескольких шагов. В вашем распоряжении дизайн формы и статичная верстка, в которой не показано, как форма должна работать в динамике. Подробного описания, как должны вести себя различные поля в зависимости от действий пользователя, в требованиях к проекту нет. Ваши действия?
+  * самым логичным, мне кажется, для начала попробовать выяснить все же требования клиента к этой форме.
+  * Если выяснить это невозможно, то я бы пошла и поискала приложения или примеры похожих форм, посмотрела как они работают, подумала, что бы я изменила и изменила ли. И сделала бы как-то похоже, с учетом возможных изменений. Проконсультировалась бы с коллегами, насколько данная форма им кажется удобной и логичной. 
+Вообще, у меня был подобный опыт в работе, когда просто говорили "давайте сделаем, чтобы работало хорошо.", но никаких конкретных требований или даже дизайна не давали, и выяснить их тоже не было почти возможности, поскольку корпоративная структура у клиента была сложная, пока до нужных людей дойдет вопрос, пока вернется ответ. Так и реализовывали, основываясь на личном опыте использования подобнх страниц, консультируясь с коллегами, чтобы получить свежий взгляд на функциональность.
 
-### `npm run eject`
+7. Расскажите, какие инструменты помогают вам экономить время в процессе написания, проверки и отладки кода.
+  * я пользуюсь WebStorm, он очень удобен. Хотя иногда, когда надо набросать небольшой скриптик, пользуюсь Sublime, потому что там проще создать новый файл. 
+  * Линтеры помогают в красивом написании кода и структуризации его.
+  * Проверяю код в Google Chrome, считаю его наиболее удобным для разработки.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+8. Какие ресурсы вы используете для развития в профессиональной сфере? Приведите несколько конкретных примеров (сайты, блоги и так далее). Какие ещё области знаний, кроме тех, что непосредственно относятся к работе, вам интересны?
+  * читаю статьи на Медиуме на интересующие меня темы.
+  * для курсов часто пользуюсь Udemy
+  * Помимо этого интересуюсь темами прикладного искусства, архитектурой, путешесвиями.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+9. Расскажите нам немного о себе и предоставьте несколько ссылок на последние работы, выполненные вами.
+  * помимо программирования интересуюсь всякого рода DYI-ем, будь то выжигание по дереву, создание полигональных фигур из бумаги или ремонт и перекраска балкона :) Стараюсь больше путешествовать, особенно люблю поездки на машине на дальние расстояния. 
+  * я работала в составе команды и все мы по чуть-чуть делали все, поэтому конкретно мою работу не могу предоставить, есть пример портала для одного из клиентов https://anytimesoutherncoos.anytime.org/home . Он написан на Angular 2, и часть его функциональности скрыта за авторизацией, к сожалению.

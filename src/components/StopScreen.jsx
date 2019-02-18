@@ -49,9 +49,10 @@ class StopScreen extends Component {
     }
 }
 
-const mapStateToProps = ({ map }) => {
+const mapStateToProps = ({ map, stop }) => {
     const { lat, lng } = map;
-    return { lat, lng };
+    const { stops } = stop;
+    return { lat, lng, stops };
 };
 
 export default connect(mapStateToProps)(StopScreen);

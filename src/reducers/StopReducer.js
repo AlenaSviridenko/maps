@@ -38,11 +38,12 @@ export default (state = INITIAL_STATE, action) => {
         case UPDATE_STOP:
             return {
                 ...state,
-                stops: state.stops.map((stop, index) =>
-                    index !== action.payload.index
-                        ? stop
-                        : action.payload.newAddress
-                )
+                stops: state.stops.map((stop, index) => {
+                    if (index === action.payload.index) {
+                        stop.coordinates = action.payload.coordinates;
+                    }
+                    return stop;
+                })
             };
         case MOVE_STOP:
             return {

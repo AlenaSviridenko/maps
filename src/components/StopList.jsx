@@ -22,15 +22,13 @@ class StopList extends Component {
 
     onDragEnter({ index }) {
         const draggedOverItem = this.props.stops[index];
+        const that = this;
 
         if (this.draggedItem === draggedOverItem) {
             return;
         }
-
-        const that = this;
         let items = this.props.stops.filter(item => item !== that.draggedItem);
 
-        // inserting draggable item over the current item
         items.splice(index, 0, this.draggedItem);
         this.props.dispatch(StopActions.moveStop({ stops: items }));
     }

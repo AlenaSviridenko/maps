@@ -1,24 +1,42 @@
 /* global google */
 
 import React, { Component } from 'react';
+import { bindActionCreators } from 'redux';
 import { withGoogleMap, withScriptjs, GoogleMap, Marker, InfoWindow, Polyline } from 'react-google-maps';
+import { connect } from 'react-redux';
 
 import { ERRORS, ROUTE_STYLES, DEFAULT_CENTER } from '../config/constants';
+import { changeCenter, updateStop } from '../actions';
 
 class MapComponent extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
+        const { dispatch } = props;
         this.onDragEnd = this.onDragEnd.bind(this);
         this.createRef = this.createRef.bind(this);
+        this.onCenterChanged = this.onCenterChanged.bind(this);
         this.markerRefs = [];
         this.mapRef = React.createRef();
+        this.stops = [];
+
+        bindActionCreators({ changeCenter, updateStop }, dispatch);
 
         this.state = {
             notEnoughStops: false,
             markerClicked: -1,
             previousStopsCount: 0,
-            path: []
+            path: [],
+            stops: []
         };
+    }
+
+    componentDidMount() {
+        this.onCenterChanged();
+    }
+
+    onCenterChanged() {
+        const currentCenter = this.mapRef.current.getCenter().toJSON();
+        this.props.dispatch(changeCenter(currentCenter));
     }
 
     componentDidUpdate() {
@@ -85,9 +103,8 @@ class MapComponent extends Component {
     createPoint = (lat, lng) => new google.maps.LatLng(lat, lng);
 
     onDragEnd(index) {
-        const newCoordinates = this.markerRefs[index].getPosition().toJSON();
-
-        this.props.updateStop(newCoordinates, index);
+        const { lat, lng } = this.markerRefs[index].getPosition().toJSON();
+        this.props.dispatch(updateStop({index, lat, lng }));
     };
 
     renderMarkers() {
@@ -119,16 +136,19 @@ class MapComponent extends Component {
             <GoogleMap
                 defaultZoom={8}
                 ref={this.mapRef}
+                onCenterChanged={this.onCenterChanged}
                 defaultCenter={DEFAULT_CENTER}>
-                {!this.state.notEnoughStops && <Polyline
-                    path={this.state.path}
-                    geodesic
-                    options={ROUTE_STYLES}
-                />}
+                {
+                    !this.state.notEnoughStops && <Polyline
+                        path={this.state.path}
+                        geodesic
+                        options={ROUTE_STYLES}
+                    />
+                }
                 {this.renderMarkers()}
             </GoogleMap>
         )
     }
 }
 
-export default withScriptjs(withGoogleMap(MapComponent))
+export default connect()(withScriptjs(withGoogleMap(MapComponent)))

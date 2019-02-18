@@ -10,6 +10,7 @@ class StopScreen extends Component {
 
     constructor(props) {
         super(props);
+
         const { dispatch } = props;
         bindActionCreators(StopActions, dispatch);
 
@@ -24,14 +25,13 @@ class StopScreen extends Component {
 
     onEnter (target) {
         if (target.charCode === 13) {
-            this.props.dispatch(StopActions.addStop(this.state.newStop));
+            const { lat, lng } = this.props;
+            this.props.dispatch(StopActions.addStop({name: this.state.newStop, lat, lng}));
             this.setState({newStop: ''})
         }
     }
 
     onTextChange = (text) => this.setState({ newStop: text });
-
-    renderError = () => this.props.error && <p className="error">{this.props.error}</p>
 
     render() {
         return (
@@ -43,16 +43,15 @@ class StopScreen extends Component {
                     onTextChange={(e) => this.onTextChange(e.target.value)}
                     value={this.state.newStop}
                 />
-                {this.renderError()}
                 <StopList/>
             </div>
         )
     }
 }
 
-const mapStateToProps = ({ stop }) => {
-    const { error } = stop;
-    return { error };
+const mapStateToProps = ({ map }) => {
+    const { lat, lng } = map;
+    return { lat, lng };
 };
 
 export default connect(mapStateToProps)(StopScreen);

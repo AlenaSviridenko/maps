@@ -5,12 +5,8 @@ export const ROUTE_STYLES = {
     };
 
 export const ERRORS = {
-    notPreciseAddress: 'Адрес неточный. Пожалуйста, введите более конкретный адрес.',
-    addressNotFound: 'Не удается получить адрес.',
     routeFetchFailed: 'Ошибка получения пути.'
 };
-
-export const NO_RESULTS = 'ZERO_RESULTS';
 
 export const DEFAULT_CENTER = {
     lat: 55.75222,

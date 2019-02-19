@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 
 import { MainScreen } from '../MainScreen';
 import StopScreen from '../StopScreen';
-import MapScreen from '../MapScreen';
+import { MapScreen } from '../MapScreen';
 
 describe('Main Screen component', () => {
     it('renders without crashing', () => {

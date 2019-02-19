@@ -1,7 +1,7 @@
 import React from 'react';
 import { Row, Column } from 'simple-flexbox';
 
-import MapScreen from './MapScreen';
+import { MapScreen } from './MapScreen';
 import StopScreen from './StopScreen';
 
 const MainScreen = () => {
